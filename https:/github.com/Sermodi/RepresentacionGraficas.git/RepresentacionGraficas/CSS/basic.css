@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+canvas {
+	border: dotted;
+}
+form#puntos{
+	position: fixed;
+	border : solid #000000;
+	border-width: 1px;
+	left : 650px;
+	top: 10px;
+	max-width: 150px;
+	padding: 5px;
+}
+
+table{
+	border: 1px solid;
+}
+
+form input[type=number]{
+	max-width: 30px;
+}
+
+input#dibujarRecta{
+	position:fixed;
+	top:	400px;
+	left:	650px;
+	
+}
