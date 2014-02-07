@@ -58,11 +58,9 @@ function recta_error(a, b){
 	ctx.beginPath();
 	var auxX = resize_x(100);
 	var auxY = resize_y(a + b * 100);
-	alert("100=="+auxX + " " + (a + b * 100) + "==" + auxY);
 	ctx.moveTo(auxX , auxY);
 	var auxX = resize_x(-100);
 	var auxY = resize_y(a + b * -100);
-	alert("-100=="+auxX + " " + (a + b * -100) + "==" + auxY);
 	ctx.lineTo(auxX , auxY);
 	ctx.strokeStyle = 'red';
 	ctx.stroke();
