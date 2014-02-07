@@ -41,7 +41,7 @@ function regresionLineal(){
 	 * 		donde 	b = (N*Sxy -Sx*Sy) / (N*Sx^2 - Sx*Sx) 
 	 * 		y		a = (Sy - b* Sx) / N
 	 * */
-	var b = (N * Sxy - Sx * Sy) / (N * Sx2 - Sx*Sy); 
+	var b = (N * Sxy - Sx * Sy) / (N * Sx2 - Sx*Sx); 
 	
 	var a = (Sy - b * Sx) / N;
 	alert("y = " + a + " + " + b + "x");
@@ -57,13 +57,15 @@ function regresionLineal(){
 function recta_error(a, b){
 	ctx.beginPath();
 	var auxX = resize_x(100);
-	var auxY = resize_y(a + b * auxX);
+	var auxY = resize_y(a + b * 100);
+	alert("100=="+auxX + " " + (a + b * 100) + "==" + auxY);
 	ctx.moveTo(auxX , auxY);
 	var auxX = resize_x(-100);
-	var auxY = resize_y(a + b * auxX);
+	var auxY = resize_y(a + b * -100);
+	alert("-100=="+auxX + " " + (a + b * -100) + "==" + auxY);
 	ctx.lineTo(auxX , auxY);
 	ctx.strokeStyle = 'red';
-	ctx.stroke()
+	ctx.stroke();
 	ctx.fill();
 	ctx.closePath();
 	
@@ -80,6 +82,7 @@ function dibujar_lineas(){
 		ctx.moveTo(resize_x(puntos[i][0]),resize_y(puntos[i][1]));
 		ctx.lineTo(resize_x(puntos[i+1][0]),resize_y(puntos[i+1][1]));
 		ctx.lineWidth = 1;
+		ctx.strokeStyle = 'blue';
 		ctx.stroke();
 		ctx.fill();
 		ctx.closePath();
