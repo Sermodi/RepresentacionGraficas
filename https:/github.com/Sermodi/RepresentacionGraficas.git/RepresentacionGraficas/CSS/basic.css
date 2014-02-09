@@ -26,3 +26,8 @@ input#dibujarRecta{
 	left:	650px;
 	
 }
+
+table#tPuntos {
+	position:absolute;
+	top: 10;
+}
