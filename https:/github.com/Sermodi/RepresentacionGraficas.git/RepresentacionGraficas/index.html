@@ -12,19 +12,28 @@
 </head>
 
 <body>
-<canvas id="myCanvas" width="600" height="500" border="0">
+<canvas id="myCanvas">
 	Lo sentimos, su navegador no soporta Canvas, por favor pruebe con firefox, o chrome.
 </canvas>
-<form action="" method="post" id="puntos">
-	<table id="addPunto">
-		<tr>
-			<td class="indice">X</td>
-			<td class="indice">Y</td>
-		</tr>
-	</table>	
+<div id="info">
+	<form action="" method="post" id="puntos">
+	<div class="tabla">
+	<table id="addPunto"></table>
+	</div>	
 	<input id="add" type="button" name="a&ntildeadir" value="A&ntilde;adir">
 </form>
+<table class="tabla" id="resultados">
+	<tbody>
+		<tr>
+			<th>X</th>
+		</tr>
+		<tr>
+			<th>Y</th>
+		</tr>
+	</tbody>
+</table>
 <input id="dibujarRecta" type="button" value="Dibujar Recta" />
+</div>
 <script type="text/javascript" src="JS/grafica.js"></script>
 </body>
 </html>

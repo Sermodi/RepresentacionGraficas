@@ -2,6 +2,23 @@
  * @author Sergio Modino
  */
 
+var TTabla = 5; //Tamaño de la tabla de inserccion de puntos.
+var c=document.getElementById("myCanvas");
+c.width = screen.availWidth * 0.5;
+c.height = screen.availHeight * 0.75;
+var form=document.getElementById("addPunto");
+	form = form.children[0]; //los puntos están dentro de un table/tbody/tr/td
+var tabla = document.getElementById("addPunto");
+var tbody = document.createElement("tbody");
+
+var resultados = document.getElementById("resultados").tBodies[0].children;//array de <tr>'s
+var button=document.getElementById("add");
+var dibRecta=document.getElementById("dibujarRecta");
+var puntos= new Array();
+var ctx=c.getContext("2d");
+var MAX_x = c.width;
+var MAX_y = c.height;
+
 /********************************
  * 								*
  *	Acciones sobre la GRÁFICA	*
@@ -79,6 +96,7 @@ function add_point(x,y){
 		create_error(x1,y1,calculate_error());
 		//TODO add al array
 		almacena_punto(x,y);
+		addPuntoToResultados(x, y);
 	}
 }
 
@@ -222,7 +240,7 @@ function index_of(x,y){
 }
 
 function remove_punto(x,y){
-	var index = index_of(x,y)
+	var index = index_of(x,y);
 	puntos.splice(index,1); //del indice "index" se borra 1 elemento.
 }
 
@@ -235,7 +253,16 @@ function remove_punto(x,y){
  * TODO
  */
 function tabla_inicial(){
-	for (var pos = 0; pos < 5; pos++) {
+	var tr = document.createElement("tr");
+	var t1 = document.createElement("th");
+	var t2 = document.createElement("th");
+	t1.innerHTML = "X";
+	t2.innerHTML = "Y";
+	tr.appendChild(t1);
+	tr.appendChild(t2);
+	tbody.appendChild(tr);
+	tabla.appendChild(tbody);
+	for (var pos = 0; pos < TTabla; pos++) {
 		tr = document.createElement("tr");
 		td1= document.createElement("td");
 		td2= document.createElement("td");
@@ -254,54 +281,72 @@ function tabla_inicial(){
 	}
 }
 
-var TTabla = 10; //Tamaño de la tabla de inserccion de puntos.
-var c=document.getElementById("myCanvas");
-var form=document.getElementById("addPunto");
-	form = form.children[0]; //los puntos están dentro de un table/tbody/tr/td
-var tabla = document.getElementById("addPunto");
-var tbody = document.createElement("tbody");
+/**
+ * TODO
+ * @param x
+ * @param y
+ */
+function addPuntoToResultados(x , y){
+	var td1 = document.createElement("td"); 
+	var td2 = document.createElement("td"); 
+	td1.innerHTML = x + "";
+	td2.innerHTML = y + "";
+	resultados[0].appendChild(td1);
+	resultados[1].appendChild(td2);
+}
 
-var button=document.getElementById("add");
-var dibRecta=document.getElementById("dibujarRecta");
-var puntos= new Array();
-var ctx=c.getContext("2d");
-var MAX_x = c.getAttribute('width');
-var MAX_y = c.getAttribute('height');
-
-			/*Iniciamos la tabla de inserción de datos*/
-			tabla_inicial();
-			/*Dibujamos los ejes en canvas*/
-			ctx.beginPath();
-			//Eje de las X
-			ctx.moveTo(0,MAX_y/2);
-			ctx.lineTo(1000,MAX_y/2);
-			ctx.lineWidth = 1;
-			ctx.stroke();
-			ctx.fill(); 
-			//Eje de las Y
-			ctx.moveTo(MAX_x/2,0);
-			ctx.lineTo(MAX_x/2,MAX_y);
-			ctx.lineWidth = 1;
-			ctx.stroke();
-			ctx.fill(); 
-			ctx.closePath();
-			//marcadores Y
-			for(var i=0;i<=MAX_x; i+=10){
-				ctx.beginPath();
-				ctx.moveTo(MAX_x/2 + 3 , i);
-				ctx.lineTo(MAX_x/2 - 3 , i);
-				ctx.lineWidth = 0.5;
-     			 // set line color
-      			ctx.stroke();
-				ctx.fill();
-				ctx.moveTo(i , MAX_y/2 + 3);
-				ctx.lineTo(i , MAX_y/2 - 3);
-				ctx.lineWidth = 0.5;
-     			 // set line color
-      			ctx.stroke();
-				ctx.fill();
-				ctx.closePath();
-			}
+/**
+ * Tras pulsar en el boton añadir puntos, se reinicia la tabla con los
+ * inputs, poniendo el valor de todos a cero.
+ */
+function reiniciarTabla(){
+	trs = tabla.children[0].children;
+	for (var i = 1; i < trs.length; i++) {
+		for (var j = 0; j < 2; j++) {
+			input = trs[i].children[j].children[0];
+			input.value = "";
+		}
+	}
+}
+/********************************
+ * 								*
+ * Codigo PRINCIPAL del script	*
+ * 								*
+ ********************************/
+/*Iniciamos la tabla de inserción de datos*/
+tabla_inicial();
+/*Dibujamos los ejes en canvas*/
+ctx.beginPath();
+//Eje de las X
+ctx.moveTo(0,MAX_y/2);
+ctx.lineTo(1000,MAX_y/2);
+ctx.lineWidth = 1;
+ctx.stroke();
+ctx.fill(); 
+//Eje de las Y
+ctx.moveTo(MAX_x/2,0);
+ctx.lineTo(MAX_x/2,MAX_y);
+ctx.lineWidth = 1;
+ctx.stroke();
+ctx.fill(); 
+ctx.closePath();
+//marcadores Y
+for(var i=0;i<=MAX_x; i+=10){
+	ctx.beginPath();
+	ctx.moveTo(MAX_x/2 + 3 , i);
+	ctx.lineTo(MAX_x/2 - 3 , i);
+	ctx.lineWidth = 0.5;
+	 // set line color
+	ctx.stroke();
+	ctx.fill();
+	ctx.moveTo(i , MAX_y/2 + 3);
+	ctx.lineTo(i , MAX_y/2 - 3);
+	ctx.lineWidth = 0.5;
+	 // set line color
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+}
 		/*Tomamos los valores del formulario*/
 		button.onclick = function(){
 			var pos = 0;
@@ -316,8 +361,8 @@ var MAX_y = c.getAttribute('height');
 					}
 				}
 				pos ++;
-			}while(pos < 10);
-			
+			}while(pos < TTabla);
+			reiniciarTabla();
 		}
 			
 		/**/
