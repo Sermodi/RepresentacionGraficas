@@ -235,40 +235,6 @@ $(document).ready(function(){
 		return 2;
 	}
 
-	/**
-	 * Modela la relación entre la variable dependiente Y y la variable 
-	 * independiente X de todos los puntos del sistema, generando la recta
-	 * ideal del mismo. 
-	 */
-	function regresionLineal(){
-		/*De los puntos actuales se obtiene:
-		 * 		·La suma de las x
-		 * 		·La suma de las y
-		 * 		·La suma del producto de x*y
-		 * 		·La suma del cuadrado de las x*/
-		var Sx = 0;		//Suma de las x
-		var Sy = 0;		//Suma de las y.
-		var Sxy = 0;	//Suma de x*y.1	2	3	4	5
-		var Sx2 = 0;	//Suma de x^2.
-		var N = puntos.length;
-		for (var i = 0; i < puntos.length; i++) {
-			Sx += puntos[i][0]; //Se suman todas las x
-			Sy += puntos[i][1]; //Se suman todas las y
-			Sxy += puntos[i][0] * puntos[i][1]; // Se suman todos los x*y
-			Sx2 += puntos[i][0] * puntos[i][0]; // Se suman todas las x^2
-		}
-		
-		/* Calculamos a y b de f(x)= a +b*x	
-		 * 		donde 	b = (N*Sxy -Sx*Sy) / (N*Sx^2 - Sx*Sx) 
-		 * 		y		a = (Sy - b* Sx) / N
-		 * */
-		var b = (N * Sxy - Sx * Sy) / (N * Sx2 - Sx*Sx); 
-		
-		var a = (Sy - b * Sx) / N;
-		alert("y = " + a + " + " + b + "x");
-		recta_error(a,b);
-	}
-
 	/****************************************
 	 * 										*
 	 * 	Acciones sobre el ARRAY de puntos	*
@@ -421,6 +387,19 @@ $(document).ready(function(){
 		recta_error(a,b);
 	}
 	
+	/**
+	 * Oculta el elemento pasado por argumento
+	 */
+	function ocultar(elem){
+		elem.style.display = 'none';
+	}
+	
+	/**
+	 * Muestra el elemento pasado por argumento
+	 */
+	function mostrar(elem){
+		elem.style.display = 'block';
+	}
 	
 	/**
 	 * Declaración de variables.
@@ -436,6 +415,7 @@ $(document).ready(function(){
 	var tabla = document.getElementById("addPunto");
 	var tbody = document.createElement("tbody");
 
+	var img = document.getElementById("imagen");
 	var resultados = document.getElementById("resultados").tBodies[0].children;//array de <tr>'s
 	var add_punto = document.getElementById("add");
 	var dibRecta = document.getElementById("dibujarRecta");
@@ -452,14 +432,24 @@ $(document).ready(function(){
 	//El script se ejecuta tras cargar el documento entero.
 	tabla_inicial();
 	grafica_inicial();
+	ocultar(dibRecta);
+	ocultar(reset_grafica);
+	ocultar(to_image);
+	ocultar(imagen);
 
 	add_punto.onclick = function(){
 		add_puntos();
+		if(puntos.length > 2){
+			mostrar(dibRecta);
+		}
 	};
 	
 	dibRecta.onclick = function(){
 		dibujar_lineas();
 		regresionLineal();
+		ocultar(dibRecta);
+		mostrar(reset_grafica);
+		mostrar(to_image);
 	};
 	
 	reset_grafica.onclick = function(){
@@ -467,6 +457,18 @@ $(document).ready(function(){
 		grafica_inicial();
 		removePuntosFromResultados();
 		remove_puntos();
+		ocultar(reset_grafica);
+		ocultar(to_image);
+		ocultar(img);
+		mostrar(c);
 	};
 	
+	to_image.onclick = function(){
+		ocultar(c);
+		mostrar(img);
+		ctx.textAlign = "right";
+		ctx.textBaseline = "bottom";
+		ctx.fillText("Imágen autogenerada", MAX_x - 50, MAX_y -50);
+		img.src = c ? c.toDataURL() : "could not find a <canvas> element";
+	};
 });

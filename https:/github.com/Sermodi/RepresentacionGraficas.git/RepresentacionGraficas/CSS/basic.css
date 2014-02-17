@@ -3,9 +3,13 @@
 canvas#myCanvas {
 	border:1px solid #3f7f00;
 }
-.tabla {
+
+th{
+	min-width: 2em;
+}
+
+.tabla table{
 	margin:0px;padding:0px;
-	width:100%;
 	box-shadow: 0px 1px 5px #888888;
 	border:1px solid #3f7f00;
 	
@@ -24,10 +28,9 @@ canvas#myCanvas {
 	-moz-border-radius-topleft:0px;
 	-webkit-border-top-left-radius:0px;
 	border-top-left-radius:0px;
-}.tabla table{
+
     border-collapse: collapse;
         border-spacing: 0;
-	width:100%;
 	height:100%;
 	margin:0px;padding:0px;
 }.tabla tr:last-child td:last-child {
@@ -58,7 +61,7 @@ canvas#myCanvas {
 	border-width:0px 1px 1px 0px;
 	text-align:left;
 	padding:7px;
-	font-size:10px;
+	font-size:9pt;
 	font-family:Verdana;
 	font-weight:normal;
 	color:#000000;
@@ -76,7 +79,7 @@ canvas#myCanvas {
 	border:0px solid #3f7f00;
 	text-align:center;
 	border-width:0px 0px 1px 1px;
-	font-size:14px;
+	font-size:10pt;
 	font-family:Verdana;
 	font-weight:bold;
 	color:#ffffff;
@@ -98,20 +101,59 @@ form input[type=number]{
 }
 
 input[type=button]{
-	border : solid 1px #288c1a;
-	border-radius : 5px 5px 5px 5px ;
-	moz-border-radius : 5px 5px 5px 5px ;
-	-webkit-box-shadow : 0px 0px 1px rgba(0,0,0,0.7);
-	-moz-box-shadow : 0px 0px 1px rgba(0,0,0,0.7);
-	box-shadow : 0px 0px 1px rgba(0,0,0,0.7);
-	font-size : 14pt;
-	color : #ffffff;
-	padding : 1px 17px;
 	background:-o-linear-gradient(bottom, #5fbf00 5%, #3f7f00 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #5fbf00), color-stop(1, #3f7f00) );
 	background:-moz-linear-gradient( center top, #5fbf00 5%, #3f7f00 100% );
 	background-color:#5fbf00;
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#81f505', endColorstr='#407f00');
+	-webkit-border-top-left-radius:20px;
+	-moz-border-radius-topleft:20px;
+	border-top-left-radius:20px;
+	-webkit-border-top-right-radius:20px;
+	-moz-border-radius-topright:20px;
+	border-top-right-radius:20px;
+	-webkit-border-bottom-right-radius:20px;
+	-moz-border-radius-bottomright:20px;
+	border-bottom-right-radius:20px;
+	-webkit-border-bottom-left-radius:20px;
+	-moz-border-radius-bottomleft:20px;
+	border-bottom-left-radius:20px;
+	text-indent:-3.93px;
+	border:1px solid #278c1a;
+	display:block;
+	
+	color:#ffffff;
+	font-family:Verdana;
+	font-size:9pt;
+	font-weight:bold;
+	font-style:normal;
+	line-height:37px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 0px #0c5c00;
+	height: 2.5em;
+	
+	padding-left: 1em;
+	padding-right: 1em;
+	
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+	
+	outline: none;
 }
-
+input[type=button]:hover{
+	position:relative;
+	top:1px;
+}
+input[type=button]:active {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #407f00), color-stop(1, #81f505) );
+	background:-moz-linear-gradient( center top, #407f00 5%, #81f505 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#407f00', endColorstr='#81f505');
+	background-color:#407f00;
+	outline: none;
+}
+input[type=button]::-moz-focus-inner{
+	border: 0;
+}
 form#puntos{
 	max-width: 150px;
 	padding: 5px;
@@ -123,4 +165,7 @@ form#puntos{
 	top: 	10px;
 	left:	55%;
 	
+}
+#resultados tr th{
+	max-width: 20px;
 }
