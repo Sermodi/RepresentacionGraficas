@@ -14,6 +14,7 @@ $(document).ready(function(){
 	 * 								*
 	 ********************************/
 	function create_error(x,y,error){
+		
 		ctx.beginPath();
 		ctx.moveTo(x - error, y);
 		ctx.lineTo(x + error, y);
@@ -54,14 +55,26 @@ $(document).ready(function(){
 	 */
 	function dibujar_lineas(){
 		for(var i= 0; i < puntos.length-1 ; i++){
+			var x = puntos[i][0];
+			var nx = resize_x(x);
+			var ny = resize_y(puntos[i][1]);
+			var relativeY = a + b * x;
 			ctx.beginPath();
-			ctx.moveTo(resize_x(puntos[i][0]),resize_y(puntos[i][1]));
-			ctx.lineTo(resize_x(puntos[i+1][0]),resize_y(puntos[i+1][1]));
+			ctx.moveTo(nx , ny);
+			ctx.lineTo(nx , resize_y(relativeY));
 			ctx.lineWidth = 1;
-			ctx.strokeStyle = 'blue';
+			ctx.strokeStyle = 'green';
 			ctx.stroke();
 			ctx.fill();
 			ctx.closePath();
+//			ctx.beginPath();
+//			ctx.moveTo(resize_x(puntos[i][0]),resize_y(puntos[i][1]));
+//			ctx.lineTo(resize_x(puntos[i+1][0]),resize_y(puntos[i+1][1]));
+//			ctx.lineWidth = 1;
+//			ctx.strokeStyle = 'blue';
+//			ctx.stroke();
+//			ctx.fill();
+//			ctx.closePath();
 		}
 	}
 
@@ -190,7 +203,7 @@ $(document).ready(function(){
 			ctx.beginPath();
 			ctx.moveTo(x1,y1);
 			ctx.lineTo(x1+1,y1+1);
-			ctx.strokeStyle = 'blue';
+			ctx.strokeStyle = 'green';
 			ctx.stroke();
 			ctx.fill();
 			ctx.closePath();
@@ -380,9 +393,9 @@ $(document).ready(function(){
 		 * 		donde 	b = (N*Sxy -Sx*Sy) / (N*Sx^2 - Sx*Sx) 
 		 * 		y		a = (Sy - b* Sx) / N
 		 * */
-		var b = (N * Sxy - Sx * Sy) / (N * Sx2 - Sx*Sx); 
+		b = (N * Sxy - Sx * Sy) / (N * Sx2 - Sx*Sx); 
 		
-		var a = (Sy - b * Sx) / N;
+		a = (Sy - b * Sx) / N;
 		alert("y = " + a + " + " + b + "x");
 		recta_error(a,b);
 	}
@@ -399,6 +412,23 @@ $(document).ready(function(){
 	 */
 	function mostrar(elem){
 		elem.style.display = 'block';
+	}
+	
+	function tabla_en_imagen(){ 
+		var aux = "<table>";
+		var rowLength = tabla.rows.length;
+		for (i = 0; i < rowLength; i++){
+			var celda = tabla.rows.item(i).cells;
+			var celdaLength = celda.length;
+			aux += "<tr>";
+			for(var j = 0; j < celdaLength; j++){
+				//TODO necesario añadir el tr y los td.
+				aux += "<td>" + celda.item(j).innerHTML; + "<td>";
+			}
+			aux += "</tr>";
+		}
+		aux += "</table>";
+		return aux;
 	}
 	
 	/**
@@ -445,11 +475,12 @@ $(document).ready(function(){
 	};
 	
 	dibRecta.onclick = function(){
-		dibujar_lineas();
 		regresionLineal();
+		dibujar_lineas();
 		ocultar(dibRecta);
 		mostrar(reset_grafica);
 		mostrar(to_image);
+		ocultar(add_punto);
 	};
 	
 	reset_grafica.onclick = function(){
@@ -461,14 +492,17 @@ $(document).ready(function(){
 		ocultar(to_image);
 		ocultar(img);
 		mostrar(c);
+		mostrar(add_punto);
 	};
 	
 	to_image.onclick = function(){
-		ocultar(c);
-		mostrar(img);
 		ctx.textAlign = "right";
 		ctx.textBaseline = "bottom";
-		ctx.fillText("Imágen autogenerada", MAX_x - 50, MAX_y -50);
+		ctx.font = "30 pt Verdana";
+		ctx.fillStyle = "red";
+		ctx.fillText("y="+a+" + "+b+"x", MAX_x - 50, MAX_y -50);
 		img.src = c ? c.toDataURL() : "could not find a <canvas> element";
+		ocultar(c);
+		mostrar(img);
 	};
 });
