@@ -183,7 +183,10 @@ $(document).ready(function(){
 				if(isNaN(x) || isNaN(y)){//True si la variable NO es un numero
 						alert("Es necesario escribir un numero en ese campo");
 				}else{
-						add_point(x,y);
+					if(!esta_punto(x,y)){
+						almacena_punto(x,y);
+						addPuntoToResultados(x, y);
+					}
 				}
 			}
 			pos ++;
@@ -195,8 +198,12 @@ $(document).ready(function(){
 	 * @param x valor del punto en el eje de las X.
 	 * @param y valor del punto en el eje de las Y.
 	 */
-	function add_point(x,y){
-		if(!esta_punto(x,y)){
+	function draw_points(){
+		var x;
+		var y;
+		for (var i = 0; i < puntos.length; i++) {
+			x = puntos[i][0];
+			y = puntos[i][1];
 			ctx.beginPath();
 			x1 = resize_x(x);
 			y1 = resize_y(y);
@@ -208,9 +215,6 @@ $(document).ready(function(){
 			ctx.fill();
 			ctx.closePath();
 			create_error(x1,y1,calculate_error());
-			//TODO add al array
-			almacena_punto(x,y);
-			addPuntoToResultados(x, y);
 		}
 	}
 	
@@ -227,7 +231,8 @@ $(document).ready(function(){
 	 * @returns {Number}
 	 */
 	function resize_x(x){
-		return x * 10 + MAX_x/2;
+//		return x * 10 + MAX_x/2;
+		return x * escala + posicion_ejeX();
 	}
 
 	/**
@@ -237,7 +242,8 @@ $(document).ready(function(){
 	 * @returns {Number}
 	 */
 	function resize_y(y){
-		return MAX_y/2 - y * 10;
+//		return MAX_y/2 - y * 10;
+		return posicion_ejeY() - y * escala;
 	}
 	/**
 	*	TODO 
@@ -422,7 +428,6 @@ $(document).ready(function(){
 			var celdaLength = celda.length;
 			aux += "<tr>";
 			for(var j = 0; j < celdaLength; j++){
-				//TODO necesario añadir el tr y los td.
 				aux += "<td>" + celda.item(j).innerHTML; + "<td>";
 			}
 			aux += "</tr>";
@@ -431,6 +436,80 @@ $(document).ready(function(){
 		return aux;
 	}
 	
+	/********************************
+	 * 								*
+	 *	Operaciones de reescalado	*
+	 *								*
+	 ********************************/
+	//TODO
+	function posicion_minima(){
+		var minimo = 0;
+		for (var i = 0; i < puntos.length; i++) {
+			if(puntos[i][0] < minimo){
+				minimo = puntos[i][0];
+			}
+			if(puntos[i][1] < minimo){
+				minimo = puntos[i][1];
+			}
+		}
+		//Para que el punto sea visible se añade un valor al resultado.
+		return minimo - 2;
+	}
+	
+	function posicion_maxima(){
+		var maximo = 0;
+		for (var i = 0; i < puntos.length; i++) {
+			if(puntos[i][0] > maximo){
+				maximo = puntos[i][0];
+			}
+			if(puntos[i][1] > maximo){
+				maximo = puntos[i][1];
+			}
+		}
+		//Para que el punto sea visible se añade un valor al resultado.
+		return maximo + 2;
+	}
+	
+	function puntos_mostrados(){
+		return posicion_maxima() + Math.abs(posicion_minima());
+	}
+	/**
+	 * Indicará el ancho de una unidad de medida en pixeles
+	 * @returns
+	 */
+	function set_escala(){
+		if(MAX_x > MAX_y){
+			escala = MAX_y / puntos_mostrados();
+		}else{
+			escala = MAX_x / puntos_mostrados();
+		}
+		//Limitamos los decimales a 3 decimales.
+		escala = escala.toFixed(3);
+	}
+	
+	/**
+	 * Posicion REAL del eje de las y en la gráfica
+	 * 		(no necesita reescalado).
+	 * 	Altura del cuadro menos los puntos negativos escalados.
+	 * 	pos_ejeY = h - ((puntos_mostrados - punto_máximo) * escala)
+	 */
+	function posicion_ejeY(){
+		/*Se calculan los puntos negativos con:  número de puntos - el punto de mayor valor*/
+		var aux = puntos_mostrados() - posicion_maxima();
+		/*posicion = MAX_y - (aux * escala)*/
+		var posicion = MAX_y - (aux * escala);
+		return posicion;
+	}
+	/**
+	 * Posicion REAL del eje de las x en la gráfica
+	 * 		(no necesita reescalado).
+	 */
+	function posicion_ejeX(){
+		/*Se calcula el número de puntos - el punto de mayor valor*/
+		var aux = puntos_mostrados() - posicion_maxima();
+		posicion = aux * escala;
+		return posicion;
+	}
 	/**
 	 * Declaración de variables.
 	 */
@@ -448,21 +527,19 @@ $(document).ready(function(){
 	var img = document.getElementById("imagen");
 	var resultados = document.getElementById("resultados").tBodies[0].children;//array de <tr>'s
 	var add_punto = document.getElementById("add");
-	var dibRecta = document.getElementById("dibujarRecta");
 	var reset_grafica = document.getElementById("resetG");
 	var to_image = document.getElementById("to_image");
 	/**Almacenamos los puntos en un array.*/
 	var puntos= new Array();
 	var MAX_x = c.width;
 	var MAX_y = c.height;
-	
+	var escala = 10;
 	/**
 	 * Script principal
 	 */
 	//El script se ejecuta tras cargar el documento entero.
 	tabla_inicial();
 	grafica_inicial();
-	ocultar(dibRecta);
 	ocultar(reset_grafica);
 	ocultar(to_image);
 	ocultar(imagen);
@@ -470,17 +547,16 @@ $(document).ready(function(){
 	add_punto.onclick = function(){
 		add_puntos();
 		if(puntos.length > 2){
-			mostrar(dibRecta);
+			ctx.clearRect(0 , 0 , c.width , c.height);
+			set_escala();
+			grafica_inicial();
+			regresionLineal();
+			dibujar_lineas();
+			draw_points();
+			mostrar(reset_grafica);
+			mostrar(to_image);
 		}
-	};
-	
-	dibRecta.onclick = function(){
-		regresionLineal();
-		dibujar_lineas();
-		ocultar(dibRecta);
-		mostrar(reset_grafica);
-		mostrar(to_image);
-		ocultar(add_punto);
+		alert("pos_ejeX: " + posicion_ejeX() + "  pos_ejeY: " + posicion_ejeY());
 	};
 	
 	reset_grafica.onclick = function(){
