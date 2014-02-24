@@ -83,28 +83,29 @@ $(document).ready(function(){
 	 * Se generan los ejes de las X y de las Y para nuestra gráfica
 	 */
 	function grafica_inicial(){
+		/**	TODO CAMBIAR AL REESCALADO */
 		/*Dibujamos los ejes en canvas*/
 		ctx.beginPath();
 		//Eje de las X
-		ctx.moveTo(0,MAX_y/2);
-		ctx.lineTo(1000,MAX_y/2);
+		ctx.moveTo(0 , posicion_ejeY());
+		ctx.lineTo(MAX_x+1 , posicion_ejeY());
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = 'black';
 		ctx.stroke();
 		ctx.fill(); 
 		//Eje de las Y
-		ctx.moveTo(MAX_x/2,0);
-		ctx.lineTo(MAX_x/2,MAX_y);
+		ctx.moveTo(posicion_ejeX() , 0);
+		ctx.lineTo(posicion_ejeX() , MAX_y);
 		ctx.lineWidth = 1;
 		ctx.stroke();
 		ctx.fill(); 
 		ctx.closePath();
 		//marcadores 
-		for(var i=0;i<=MAX_x/2; i+=10){
+		for(var i=0;i<=MAX_x; i+=escala){
 			//Parte derecha de las X.
 			ctx.beginPath();
-			ctx.moveTo(i + MAX_x/2 , MAX_y/2 + 3);
-			ctx.lineTo(i + MAX_x/2, MAX_y/2 - 3);
+			ctx.moveTo(i + posicion_ejeX() , posicion_ejeY() + 3);
+			ctx.lineTo(i + posicion_ejeX() , posicion_ejeY() - 3);
 			ctx.lineWidth = 0.5;
 			 // set line color
 			ctx.stroke();
@@ -112,8 +113,8 @@ $(document).ready(function(){
 			ctx.closePath();
 			//Parte izquierda de las X.
 			ctx.beginPath();
-			ctx.moveTo(MAX_x/2 - i , MAX_y/2 + 3);
-			ctx.lineTo(MAX_x/2 - i, MAX_y/2 - 3);
+			ctx.moveTo(posicion_ejeX() - i , posicion_ejeY() + 3);
+			ctx.lineTo(posicion_ejeX() - i, posicion_ejeY() - 3);
 			ctx.lineWidth = 0.5;
 			 // set line color
 			ctx.stroke();
@@ -121,8 +122,8 @@ $(document).ready(function(){
 			ctx.closePath();
 			//Parte superior de las Y.
 			ctx.beginPath();
-			ctx.moveTo(MAX_x/2 - 3 , MAX_y/2 - i);
-			ctx.lineTo(MAX_x/2 + 3, MAX_y/2 - i);
+			ctx.moveTo(posicion_ejeX()- 3 , posicion_ejeY() - i);
+			ctx.lineTo(posicion_ejeX() + 3, posicion_ejeY() - i);
 			ctx.lineWidth = 0.5;
 			 // set line color
 			ctx.stroke();
@@ -130,8 +131,8 @@ $(document).ready(function(){
 			ctx.closePath();
 			//Parte inferior de las Y.
 			ctx.beginPath();
-			ctx.moveTo(MAX_x/2 - 3 , MAX_y/2 + i);
-			ctx.lineTo(MAX_x/2 + 3, MAX_y/2 + i);
+			ctx.moveTo(posicion_ejeX() - 3 , posicion_ejeY() + i);
+			ctx.lineTo(posicion_ejeX() + 3, posicion_ejeY() + i);
 			ctx.lineWidth = 0.5;
 			 // set line color
 			ctx.stroke();
@@ -556,7 +557,6 @@ $(document).ready(function(){
 			mostrar(reset_grafica);
 			mostrar(to_image);
 		}
-		alert("pos_ejeX: " + posicion_ejeX() + "  pos_ejeY: " + posicion_ejeY());
 	};
 	
 	reset_grafica.onclick = function(){
