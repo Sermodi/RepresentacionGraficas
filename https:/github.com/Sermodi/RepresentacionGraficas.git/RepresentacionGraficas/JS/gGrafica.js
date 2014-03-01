@@ -35,11 +35,11 @@ $(document).ready(function(){
 	 */
 	function recta_error(a, b){
 		ctx.beginPath();
-		var auxX = resize_x(100);
-		var auxY = resize_y(a + b * 100);
+		var auxX = resize_x(MAX_x/escala);
+		var auxY = resize_y(a + b * (MAX_x/escala));
 		ctx.moveTo(auxX , auxY);
-		var auxX = resize_x(-100);
-		var auxY = resize_y(a + b * -100);
+		var auxX = resize_x(-(MAX_x/escala));
+		var auxY = resize_y(a + b * -(MAX_x/escala));
 		ctx.lineTo(auxX , auxY);
 		ctx.strokeStyle = 'red';
 		ctx.stroke();
@@ -83,7 +83,6 @@ $(document).ready(function(){
 	 * Se generan los ejes de las X y de las Y para nuestra gráfica
 	 */
 	function grafica_inicial(){
-		/**	TODO CAMBIAR AL REESCALADO */
 		/*Dibujamos los ejes en canvas*/
 		ctx.beginPath();
 		//Eje de las X
@@ -101,15 +100,35 @@ $(document).ready(function(){
 		ctx.fill(); 
 		ctx.closePath();
 		//marcadores 
-		for(var i=0;i<=MAX_x; i+=escala){
+		var producto = 1;
+		if(escala < 15 && escala >= 7.5 ){
+			producto = 2;
+		}else if(escala < 7.5 && escala >= 5){
+			producto = 5;
+		}else if(escala < 5 && escala >= 2.5){
+			producto = 10;
+		}else if(escala < 2.5 && escala >= 1){
+			producto = 20;
+		}else if(escala < 1){
+			producto = 50;
+		}else if (escala < 0.5){
+			producto = 100;
+		}
+		for(var i=0;i<=MAX_x; i= parseFloat(i) + parseFloat(escala * producto)){
 			//Parte derecha de las X.
 			ctx.beginPath();
-			ctx.moveTo(i + posicion_ejeX() , posicion_ejeY() + 3);
-			ctx.lineTo(i + posicion_ejeX() , posicion_ejeY() - 3);
+			ctx.moveTo(posicion_ejeX() + i , posicion_ejeY() + 3);
+			ctx.lineTo(posicion_ejeX() + i , posicion_ejeY() - 3);
 			ctx.lineWidth = 0.5;
 			 // set line color
 			ctx.stroke();
 			ctx.fill();
+			//Texto:
+			ctx.textAlign = "center";
+			ctx.textBaseline = "top";
+			ctx.font = "6pt Arial";
+			ctx.fillStyle = "black";
+			ctx.fillText(Math.round(i/escala), posicion_ejeX() + i, posicion_ejeY() + 6);
 			ctx.closePath();
 			//Parte izquierda de las X.
 			ctx.beginPath();
@@ -119,6 +138,12 @@ $(document).ready(function(){
 			 // set line color
 			ctx.stroke();
 			ctx.fill();
+			//Texto:
+			ctx.textAlign = "center";
+			ctx.textBaseline = "top";
+			ctx.font = "6pt Arial";
+			ctx.fillStyle = "black";
+			ctx.fillText(-Math.round(i/escala), posicion_ejeX() - i, posicion_ejeY() + 6);
 			ctx.closePath();
 			//Parte superior de las Y.
 			ctx.beginPath();
@@ -128,6 +153,14 @@ $(document).ready(function(){
 			 // set line color
 			ctx.stroke();
 			ctx.fill();
+			//Texto:
+			if(i/escala != 0){
+				ctx.textAlign = "left";
+				ctx.textBaseline = "top";
+				ctx.font = "6pt Arial";
+				ctx.fillStyle = "black";
+				ctx.fillText(Math.round(i/escala), posicion_ejeX() - 10, posicion_ejeY() -i -3);
+			}
 			ctx.closePath();
 			//Parte inferior de las Y.
 			ctx.beginPath();
@@ -137,6 +170,14 @@ $(document).ready(function(){
 			 // set line color
 			ctx.stroke();
 			ctx.fill();
+			//Texto:
+			if(i/escala != 0){
+				ctx.textAlign = "left";
+				ctx.textBaseline = "top";
+				ctx.font = "6pt Arial";
+				ctx.fillStyle = "black";
+				ctx.fillText(-Math.round(i/escala), posicion_ejeX() - 10, posicion_ejeY() +i -3);
+			}
 			ctx.closePath();
 		}
 	}
@@ -147,6 +188,11 @@ $(document).ready(function(){
 		var tr = document.createElement("tr");
 		var t1 = document.createElement("th");
 		var t2 = document.createElement("th");
+		var tbody = document.createElement("tbody");
+		var td1;
+		var td2;
+		var nput1;
+		var nput2;
 		t1.innerHTML = "X";
 		t2.innerHTML = "Y";
 		tr.appendChild(t1);
@@ -172,6 +218,34 @@ $(document).ready(function(){
 		}
 	}
 	
+	function add_tabla(){
+		var count = 0;
+		var puntoX = "", puntoY = "";
+		//Creamos la tabla como un fragmento de HTML
+		var tabla = "<table>";
+		//Añadimos la cabecera.
+		tabla += "<tr><th>X</th><th>Y</th></tr>";
+		//Añadimos cada input en su TD correspondiente.
+		for (var i = 0; i < TTabla; i++) {
+			puntoX = "<td><input id='xPunto"+ (TTabla * nTabla + i) +"' type='number'>";
+			puntoY = "<td><input id='yPunto"+ (TTabla * nTabla + i) +"' type='number'>";
+			tabla += "<tr>" + puntoX  + puntoY + "</tr>";
+		}
+		//cerramos la tabla.
+		tabla += "</table>";
+		
+		//Para el div contenedor de las tablas se añade el html generado.
+		$("#contenedor").append(tabla);
+		//Tras añadir los nuevos inputs nTabla tendrá el valor de la cantidad de inputs.
+		nTabla += parseInt(1);
+		
+		$("#contenedor").find("#xPunto"+ ((TTabla * nTabla) - 1)).change(function(){
+			if($(this).attr('id') == ("xPunto" + ((TTabla * nTabla) -1))){
+				add_tabla();
+			}
+		});
+	}
+	
 	/**
 	 * Añade los puntos de la Tabla a la gráfica
 	 */
@@ -191,7 +265,7 @@ $(document).ready(function(){
 				}
 			}
 			pos ++;
-		}while(pos < TTabla);
+		}while(pos < (TTabla * nTabla));
 		reiniciarTabla();
 	}
 	/**
@@ -343,13 +417,15 @@ $(document).ready(function(){
 	 * inputs, poniendo el valor de todos a cero.
 	 */
 	function reiniciarTabla(){
-		trs = tabla.children[0].children;
-		for (var i = 1; i < trs.length; i++) {
-			for (var j = 0; j < 2; j++) {
-				input = trs[i].children[j].children[0];
-				input.value = "";
-			}
-		}
+//		trs = tabla.children[0].children;
+//		for (var i = 1; i < trs.length; i++) {
+//			for (var j = 0; j < 2; j++) {
+//				input = trs[i].children[j].children[0];
+//				input.value = "";
+//			}
+//		}
+		$("input[id^=xPunto]").val("");
+		$("input[id^=yPunto]").val("");
 	}
 
 	/**
@@ -403,7 +479,7 @@ $(document).ready(function(){
 		b = (N * Sxy - Sx * Sy) / (N * Sx2 - Sx*Sx); 
 		
 		a = (Sy - b * Sx) / N;
-		alert("y = " + a + " + " + b + "x");
+//		alert("y = " + a + " + " + b + "x");
 		recta_error(a,b);
 	}
 	
@@ -520,10 +596,10 @@ $(document).ready(function(){
 	var ctx=c.getContext("2d");
 	//Tamaño de la tabla de inserccion de puntos.
 	var TTabla = 5; 
+	var nTabla = 1; //Numero de tablas mostradas.
 	var form=document.getElementById("addPunto");
 	form = form.children[0]; //los puntos están dentro de un table/tbody/tr/td
 	var tabla = document.getElementById("addPunto");
-	var tbody = document.createElement("tbody");
 
 	var img = document.getElementById("imagen");
 	var resultados = document.getElementById("resultados").tBodies[0].children;//array de <tr>'s
@@ -534,7 +610,7 @@ $(document).ready(function(){
 	var puntos= new Array();
 	var MAX_x = c.width;
 	var MAX_y = c.height;
-	var escala = 10;
+	var escala = 50;
 	/**
 	 * Script principal
 	 */
@@ -544,7 +620,11 @@ $(document).ready(function(){
 	ocultar(reset_grafica);
 	ocultar(to_image);
 	ocultar(imagen);
-
+	$("#addPunto tbody tr td input").on("change", function(){
+		if($(this).attr('id') == ("xPunto" + ((TTabla * nTabla) -1))){
+			add_tabla();
+		}
+	});
 	add_punto.onclick = function(){
 		add_puntos();
 		if(puntos.length > 2){
@@ -568,7 +648,6 @@ $(document).ready(function(){
 		ocultar(to_image);
 		ocultar(img);
 		mostrar(c);
-		mostrar(add_punto);
 	};
 	
 	to_image.onclick = function(){

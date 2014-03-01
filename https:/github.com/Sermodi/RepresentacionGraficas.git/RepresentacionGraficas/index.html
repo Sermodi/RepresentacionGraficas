@@ -13,12 +13,15 @@
 </head>
 
 <body>
+<div id="canvas">
 <canvas id="myCanvas">
 	Lo sentimos, su navegador no soporta Canvas, por favor pruebe con firefox, o chrome.
 </canvas>
+<img id="imagen" />
+</div>
 <div id="info">
 	<form action="" method="post" id="puntos">
-	<div class="tabla">
+	<div class="tabla" id="contenedor">
 	<table id="addPunto"></table>
 	</div>	
 	<input id="add" type="button" name="a&ntildeadir" value="A&ntilde;adir">
@@ -38,6 +41,5 @@
 <input id="resetG" type="button" value="Reiniciar gráfica" />
 <input id="to_image" type="button" value="Convertir a Imágen" />
 </div>
-<img id="imagen" />
 </body>
 </html>
