@@ -54,28 +54,28 @@ $(document).ready(function(){
 	 * los puntos del sistema.
 	 */
 	function dibujar_lineas(){
-		for(var i= 0; i < puntos.length-1 ; i++){
-			var x = puntos[i][0];
-			var nx = resize_x(x);
-			var ny = resize_y(puntos[i][1]);
-			var relativeY = a + b * x;
-			ctx.beginPath();
-			ctx.moveTo(nx , ny);
-			ctx.lineTo(nx , resize_y(relativeY));
-			ctx.lineWidth = 1;
-			ctx.strokeStyle = 'green';
-			ctx.stroke();
-			ctx.fill();
-			ctx.closePath();
+//		for(var i= 0; i < puntos.length-1 ; i++){
+//			var x = puntos[i][0];
+//			var nx = resize_x(x);
+//			var ny = resize_y(puntos[i][1]);
+//			var relativeY = a + b * x;
 //			ctx.beginPath();
-//			ctx.moveTo(resize_x(puntos[i][0]),resize_y(puntos[i][1]));
-//			ctx.lineTo(resize_x(puntos[i+1][0]),resize_y(puntos[i+1][1]));
+//			ctx.moveTo(nx , ny);
+//			ctx.lineTo(nx , resize_y(relativeY));
 //			ctx.lineWidth = 1;
-//			ctx.strokeStyle = 'blue';
+//			ctx.strokeStyle = 'green';
 //			ctx.stroke();
 //			ctx.fill();
 //			ctx.closePath();
-		}
+////			ctx.beginPath();
+////			ctx.moveTo(resize_x(puntos[i][0]),resize_y(puntos[i][1]));
+////			ctx.lineTo(resize_x(puntos[i+1][0]),resize_y(puntos[i+1][1]));
+////			ctx.lineWidth = 1;
+////			ctx.strokeStyle = 'blue';
+////			ctx.stroke();
+////			ctx.fill();
+////			ctx.closePath();
+//		}
 	}
 
 
@@ -391,7 +391,7 @@ $(document).ready(function(){
 	function almacena_punto(x , y){
 		var insertado = false;
 		var i = 0;
-		var punto = [parseInt(x,10) ,parseInt(y,10)];
+		var punto = [parseFloat(x) ,parseFloat(y)];
 		if(puntos.length == 0){
 			puntos[0] = punto;
 			insertado = true;
@@ -575,7 +575,11 @@ $(document).ready(function(){
 		var aux = puntos_mostrados() - posicion_maxima();
 		/*posicion = MAX_y - (aux * escala)*/
 		var posicion = MAX_y - (aux * escala);
-		return posicion;
+		if(posicion < 20){
+			return 20;
+		}else{
+			return posicion;
+		}
 	}
 	/**
 	 * Posicion REAL del eje de las x en la gráfica
@@ -584,8 +588,12 @@ $(document).ready(function(){
 	function posicion_ejeX(){
 		/*Se calcula el número de puntos - el punto de mayor valor*/
 		var aux = puntos_mostrados() - posicion_maxima();
-		posicion = aux * escala;
-		return posicion;
+		var posicion = aux * escala;
+		if(posicion > (MAX_x - 20)){
+			return MAX_x -20;
+		}else{
+			return posicion;
+		}
 	}
 	/**
 	 * Declaración de variables.
@@ -632,7 +640,7 @@ $(document).ready(function(){
 			set_escala();
 			grafica_inicial();
 			regresionLineal();
-			dibujar_lineas();
+//			dibujar_lineas();
 			draw_points();
 			mostrar(reset_grafica);
 			mostrar(to_image);
@@ -648,6 +656,7 @@ $(document).ready(function(){
 		ocultar(to_image);
 		ocultar(img);
 		mostrar(c);
+		mostrar(add_punto);
 	};
 	
 	to_image.onclick = function(){
@@ -658,6 +667,7 @@ $(document).ready(function(){
 		ctx.fillText("y="+a+" + "+b+"x", MAX_x - 50, MAX_y -50);
 		img.src = c ? c.toDataURL() : "could not find a <canvas> element";
 		ocultar(c);
+		ocultar(add_punto);
 		mostrar(img);
 	};
 });
