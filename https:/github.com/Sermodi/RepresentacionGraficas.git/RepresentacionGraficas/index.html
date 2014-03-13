@@ -9,6 +9,7 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript" src="JS/gGrafica.js"></script>
 <link rel="stylesheet" href="CSS/basic.css" />
+<link rel="stylesheet" href="CSS/onLoad.css" />
 
 </head>
 
@@ -40,6 +41,12 @@
 </div>
 <input id="resetG" type="button" value="Reiniciar gráfica" />
 <input id="to_image" type="button" value="Convertir a Imágen" />
+</div>
+<div id="subidaArchivos">
+	<p>Puedes añadir un archivo que contenga los puntos que quieres introducir, para que todo sea más rápido.</p>
+	<output id="lista"></output>
+	<div id="progress_bar"><div class="percent">0%</div></div>
+	<input type="file" id="archivo" class="bFile"name="files[]" multiple />
 </div>
 </body>
 </html>

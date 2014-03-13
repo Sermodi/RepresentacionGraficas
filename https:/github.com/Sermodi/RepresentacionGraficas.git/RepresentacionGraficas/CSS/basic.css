@@ -57,7 +57,8 @@ th{
 	
 }
 .tabla tr:nth-child(odd){ background-color:#d4ffaa; }
-.tabla tr:nth-child(even)    { background-color:#ffffff; }.tabla td{
+.tabla tr:nth-child(even)    { background-color:#ffffff; }
+.tabla td{
 	vertical-align:middle;
 	border:1px solid #3f7f00;
 	border-width:0px 1px 1px 0px;
@@ -173,3 +174,16 @@ form#puntos{
 	display: inline-block;
 	max-width: 50%;
 }
+#subidaArchivos{
+	max-width: 50%;
+	margin:0px;padding:0px;
+	box-shadow: 0px 1px 5px #888888;
+	border:1px solid #3f7f00;
+	background-color:#d4ffaa;
+	
+	font-size: 9pt;
+	
+	padding: 0.5em;
+}
+
+

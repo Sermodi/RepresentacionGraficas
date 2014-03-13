@@ -436,8 +436,10 @@ $(document).ready(function(){
 	function addPuntoToResultados(x , y){
 		var td1 = document.createElement("td"); 
 		var td2 = document.createElement("td"); 
-		td1.innerHTML = x + "";
-		td2.innerHTML = y + "";
+		x1 = Math.round(x * 1000) / 1000;
+		y1 = Math.round(y * 1000) / 1000;
+		td1.innerHTML = x1 + "";
+		td2.innerHTML = y1 + "";
 		resultados[0].appendChild(td1);
 		resultados[1].appendChild(td2);
 	}
@@ -619,6 +621,95 @@ $(document).ready(function(){
 	var MAX_x = c.width;
 	var MAX_y = c.height;
 	var escala = 50;
+	
+	/**
+	 *	LECTURA DE FICHERO
+	 */
+	var reader;
+	var progress = document.querySelector('.percent');
+	
+		function errorHandler(evt) {
+			    switch(evt.target.error.code) {
+		      case evt.target.error.NOT_FOUND_ERR:
+		        alert('No se encuentra el fichero.');
+		        break;
+		      case evt.target.error.NOT_READABLE_ERR:
+		        alert('El fichero no se puede leer\n Asegurate de que tiene los privilegios correctos.');
+		        break;
+		      case evt.target.error.ABORT_ERR:
+		        break; // noop
+		      default:
+		        alert('Ha ocurrido un error al leer el fichero, puede que el fichero esté dañado.');
+		    };
+		}
+	
+		    function updateProgress(evt) {
+		        // evt es el evento de progreso de la barra
+		        if (evt.lengthComputable) {
+		          var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+		          // Incrementar el tamaño de la barra de progreso.
+		          if (percentLoaded < 100) {
+		            progress.style.width = percentLoaded + '%';
+		            progress.textContent = percentLoaded + '%';
+		          }
+		        }
+		      }
+		    
+		    function handleFile(evt) {
+		        // Reinicia el indicador de progreso tras la selección de un nuevo fichero.
+		        progress.style.width = '1%';
+		        progress.textContent = '0%';
+				document.getElementById('progress_bar').className = 'loading';
+
+		        reader = new FileReader();
+		        reader.onloadstart = function(e) {
+		          document.getElementById('progress_bar').className = 'loading';
+		        };
+		        reader.onerror = errorHandler;
+		        reader.onprogress = updateProgress;
+		        reader.onload = function(e) {
+		          // Pasa los datos recibidos a la gráfica y se asegura de q la barra de progreso marca 100%
+		          fileRead(reader.result);
+		          progress.style.width = '100%';
+		          progress.textContent = '100%';
+		          setTimeout("document.getElementById('progress_bar').className='';", 2000);
+		        };
+		        // Lectura del fichero.
+		        reader.readAsBinaryString(evt.target.files[0]);
+		      }
+		    
+		    document.getElementById('archivo').addEventListener('change', handleFile, false);
+		    
+		function fileRead(texto){
+				var numeros = texto.split(/[\n,;\t]/);
+//				$("th").each(function(){
+//					if($(this).html() == "X"){
+//						$(this).html(numeros[0]);
+//					}else if($(this).html() == "Y"){
+//						$(this).html(numeros[1]);
+//					}
+				for (var i = 2; i < numeros.length; i+=2) {
+					if(!isNaN(numeros[i]) && !isNaN(numeros[i+1])){
+						x = numeros[i];
+						y = numeros[i+1];
+						if(!esta_punto(x, y)){
+							almacena_punto(x,y);
+							addPuntoToResultados(x, y);
+							if(puntos.length > 2){
+								ctx.clearRect(0 , 0 , c.width , c.height);
+								set_escala();
+								grafica_inicial();
+								regresionLineal();
+					//			dibujar_lineas();
+								draw_points();
+								mostrar(reset_grafica);
+								mostrar(to_image);
+							}
+						}
+	//					alert("x:" + numeros[i] + "  y:" + numeros[i+1]);
+					}
+				}
+			};
 	/**
 	 * Script principal
 	 */
@@ -628,11 +719,20 @@ $(document).ready(function(){
 	ocultar(reset_grafica);
 	ocultar(to_image);
 	ocultar(imagen);
+	$("div[id^=spinningSquaresG]").hide();
+	
 	$("#addPunto tbody tr td input").on("change", function(){
 		if($(this).attr('id') == ("xPunto" + ((TTabla * nTabla) -1))){
 			add_tabla();
 		}
 	});
+	// Comprobamos si la subida de ficheros esta soportada.
+	if (window.File && window.FileReader && window.FileList && window.Blob) {
+	  // Todo correcto, el navegador soporta todas las APIs de ficheros
+	} else {
+	  alert('Las API de ficheros no son soportadas por este navegador, la subida de un archivo ".csv" puede dar resultados erroneos o no responder.');
+	}
+
 	add_punto.onclick = function(){
 		add_puntos();
 		if(puntos.length > 2){
