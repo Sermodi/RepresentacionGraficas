@@ -498,6 +498,15 @@ $(document).ready(function(){
 	function mostrar(elem){
 		elem.style.display = 'block';
 	}
+	/**
+	 * Hace que un elemento indicado en el argumento parpadee a razon de 5 segundos.
+	 * @REQUIRES El elemento pasado por argumento debe ser un elemento jquery. Ejemplo: parpadear($("body"));
+	 */
+	function parpadear(elem){ 
+		for (var i = 0; i < 50; i++) {
+			elem.fadeIn(2500).delay(500).fadeOut(1000); 
+		}
+	}
 	
 	function tabla_en_imagen(){ 
 		var aux = "<table>";
@@ -656,26 +665,40 @@ $(document).ready(function(){
 		      }
 		    
 		    function handleFile(evt) {
+		    	var file = evt.target.files[0];
 		        // Reinicia el indicador de progreso tras la selección de un nuevo fichero.
-		        progress.style.width = '1%';
+		        progress.style.width = '0%';
 		        progress.textContent = '0%';
+	        	$("#lista").text("");
+				$("#lista").css("color", "green");
 				document.getElementById('progress_bar').className = 'loading';
 
-		        reader = new FileReader();
-		        reader.onloadstart = function(e) {
-		          document.getElementById('progress_bar').className = 'loading';
-		        };
-		        reader.onerror = errorHandler;
-		        reader.onprogress = updateProgress;
-		        reader.onload = function(e) {
-		          // Pasa los datos recibidos a la gráfica y se asegura de q la barra de progreso marca 100%
-		          fileRead(reader.result);
-		          progress.style.width = '100%';
-		          progress.textContent = '100%';
-		          setTimeout("document.getElementById('progress_bar').className='';", 2000);
-		        };
-		        // Lectura del fichero.
-		        reader.readAsBinaryString(evt.target.files[0]);
+				if (file.type.match('text/*')) {
+					reader = new FileReader();
+			        reader.onloadstart = function(e) {
+			          document.getElementById('progress_bar').className = 'loading';
+			        };
+			        reader.onerror = errorHandler;
+			        reader.onprogress = updateProgress;
+			        reader.onload = function(e) {
+			          // Pasa los datos recibidos a la gráfica y se asegura de q la barra de progreso marca 100%
+			          fileRead(reader.result);
+			          progress.style.width = '100%';
+			          progress.textContent = '100%';
+			          setTimeout("document.getElementById('progress_bar').className='';", 2000);
+			        };
+			        reader.onloadend = function(e){
+			        	$("#lista").text("¡Archivo leido con exito!");
+			        };
+			        // Lectura del fichero.
+			        reader.readAsBinaryString(file);
+				}else{
+					$("#lista").text("El archivo no tiene el formato correcto, por favor comprueba que es un archivo en texto plano o .csv");
+					$("#lista").css("color", "red");
+					parpadear($("#lista"));
+					
+				}
+		        
 		      }
 		    
 		    document.getElementById('archivo').addEventListener('change', handleFile, false);
@@ -719,7 +742,6 @@ $(document).ready(function(){
 	ocultar(reset_grafica);
 	ocultar(to_image);
 	ocultar(imagen);
-	$("div[id^=spinningSquaresG]").hide();
 	
 	$("#addPunto tbody tr td input").on("change", function(){
 		if($(this).attr('id') == ("xPunto" + ((TTabla * nTabla) -1))){

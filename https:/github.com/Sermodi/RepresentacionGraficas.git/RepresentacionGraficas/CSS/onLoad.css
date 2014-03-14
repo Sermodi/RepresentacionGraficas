@@ -17,3 +17,10 @@
     background-color: #3f7f00;
     height: auto;
     width: 0;
+    
+}
+
+#lista{
+	margin: 2em;
+	max-width: 100px;
+}
