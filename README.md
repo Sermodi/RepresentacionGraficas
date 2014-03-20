@@ -5,7 +5,7 @@ En un eje de coordenadas se añaden puntos indicados por el usuario y si estos p
 
 b) Mostrar los datos de ajuste en todo momento.
 
-d) Reescalar cada eje por separado.
+d) Reescalar cada eje por separado.   !!importante
 
 d) calcula los errores de la pendiente y la ordenada.  Esos errores te permiten determinar la precisión de ambas y cortar sus cifras decimales razonadamente.
 
