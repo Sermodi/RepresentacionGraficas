@@ -35,17 +35,18 @@ $(document).ready(function(){
 	 */
 	function recta_error(a, b){
 		ctx.beginPath();
-		var auxX = resize_x(MAX_x/escala);
-		var auxY = resize_y(a + b * (MAX_x/escala));
+		var auxX = resize_x(MAX_x/escalaX);
+		var auxY = resize_y(a + b * (MAX_x/escalaX));
 		ctx.moveTo(auxX , auxY);
-		var auxX = resize_x(-(MAX_x/escala));
-		var auxY = resize_y(a + b * -(MAX_x/escala));
+		var auxX = resize_x(-(MAX_x/escalaX));
+		var auxY = resize_y(a + b * -(MAX_x/escalaX));
 		ctx.lineTo(auxX , auxY);
 		ctx.strokeStyle = 'red';
 		ctx.stroke();
 		ctx.fill();
 		ctx.closePath();
 		
+		alert(escalaX + "-escala-" + escalaY);
 	}
 
 	/**
@@ -100,21 +101,35 @@ $(document).ready(function(){
 		ctx.fill(); 
 		ctx.closePath();
 		//marcadores 
-		var producto = 1;
-		if(escala < 15 && escala >= 7.5 ){
-			producto = 2;
-		}else if(escala < 7.5 && escala >= 5){
-			producto = 5;
-		}else if(escala < 5 && escala >= 2.5){
-			producto = 10;
-		}else if(escala < 2.5 && escala >= 1){
-			producto = 20;
-		}else if(escala < 1){
-			producto = 50;
-		}else if (escala < 0.5){
-			producto = 100;
+		var productoX = 1;
+		if(escalaX < 15 && escalaX >= 7.5 ){
+			productoX = 2;
+		}else if(escalaX < 7.5 && escalaX >= 5){
+			productoX = 5;
+		}else if(escalaX < 5 && escalaX >= 2.5){
+			productoX = 10;
+		}else if(escalaX < 2.5 && escalaX >= 1){
+			productoX = 20;
+		}else if(escalaX < 1){
+			productoX = 50;
+		}else if (escalaX < 0.5){
+			productoX = 100;
 		}
-		for(var i=0;i<=MAX_x; i= parseFloat(i) + parseFloat(escala * producto)){
+		var productoY = 1;
+		if(escalaY < 15 && escalaY >= 7.5 ){
+			productoY = 2;
+		}else if(escalaY < 7.5 && escalaY >= 5){
+			productoY = 5;
+		}else if(escalaY < 5 && escalaY >= 2.5){
+			productoY = 10;
+		}else if(escalaY < 2.5 && escalaY >= 1){
+			productoY = 20;
+		}else if(escalaY < 1){
+			productoY = 50;
+		}else if (escalaY < 0.5){
+			productoY = 100;
+		}
+		for(var i=0;i<=MAX_x; i= parseFloat(i) + parseFloat(escalaX * productoX)){
 			//Parte derecha de las X.
 			ctx.beginPath();
 			ctx.moveTo(posicion_ejeX() + i , posicion_ejeY() + 3);
@@ -126,9 +141,9 @@ $(document).ready(function(){
 			//Texto:
 			ctx.textAlign = "center";
 			ctx.textBaseline = "top";
-			ctx.font = "6pt Arial";
+			ctx.font = "8pt Arial";
 			ctx.fillStyle = "black";
-			ctx.fillText(Math.round(i/escala), posicion_ejeX() + i, posicion_ejeY() + 6);
+			ctx.fillText(Math.round(i/escalaX), posicion_ejeX() + i, posicion_ejeY() + 6);
 			ctx.closePath();
 			//Parte izquierda de las X.
 			ctx.beginPath();
@@ -141,10 +156,12 @@ $(document).ready(function(){
 			//Texto:
 			ctx.textAlign = "center";
 			ctx.textBaseline = "top";
-			ctx.font = "6pt Arial";
+			ctx.font = "8pt Arial";
 			ctx.fillStyle = "black";
-			ctx.fillText(-Math.round(i/escala), posicion_ejeX() - i, posicion_ejeY() + 6);
+			ctx.fillText(-Math.round(i/escalaX), posicion_ejeX() - i, posicion_ejeY() + 6);
 			ctx.closePath();
+		}
+		for(var i=0;i<=MAX_y; i= parseFloat(i) + parseFloat(escalaY * productoY)){
 			//Parte superior de las Y.
 			ctx.beginPath();
 			ctx.moveTo(posicion_ejeX()- 3 , posicion_ejeY() - i);
@@ -154,12 +171,12 @@ $(document).ready(function(){
 			ctx.stroke();
 			ctx.fill();
 			//Texto:
-			if(i/escala != 0){
+			if(i/escalaY != 0){
 				ctx.textAlign = "left";
 				ctx.textBaseline = "top";
-				ctx.font = "6pt Arial";
+				ctx.font = "8pt Arial";
 				ctx.fillStyle = "black";
-				ctx.fillText(Math.round(i/escala), posicion_ejeX() - 10, posicion_ejeY() -i -3);
+				ctx.fillText(Math.round(i/escalaY), posicion_ejeX() - 10, posicion_ejeY() -i -3);
 			}
 			ctx.closePath();
 			//Parte inferior de las Y.
@@ -171,12 +188,12 @@ $(document).ready(function(){
 			ctx.stroke();
 			ctx.fill();
 			//Texto:
-			if(i/escala != 0){
+			if(i/escalaY != 0){
 				ctx.textAlign = "left";
 				ctx.textBaseline = "top";
 				ctx.font = "6pt Arial";
 				ctx.fillStyle = "black";
-				ctx.fillText(-Math.round(i/escala), posicion_ejeX() - 10, posicion_ejeY() +i -3);
+				ctx.fillText(-Math.round(i/escalaY), posicion_ejeX() - 10, posicion_ejeY() +i -3);
 			}
 			ctx.closePath();
 		}
@@ -307,7 +324,7 @@ $(document).ready(function(){
 	 */
 	function resize_x(x){
 //		return x * 10 + MAX_x/2;
-		return x * escala + posicion_ejeX();
+		return x * escalaX + posicion_ejeX();
 	}
 
 	/**
@@ -318,7 +335,7 @@ $(document).ready(function(){
 	 */
 	function resize_y(y){
 //		return MAX_y/2 - y * 10;
-		return posicion_ejeY() - y * escala;
+		return posicion_ejeY() - y * escalaY;
 	}
 	/**
 	*	TODO 
@@ -530,49 +547,41 @@ $(document).ready(function(){
 	 *								*
 	 ********************************/
 	//TODO
-	function posicion_minima(){
+	function posicion_minima(j){
 		var minimo = 0;
 		for (var i = 0; i < puntos.length; i++) {
-			if(puntos[i][0] < minimo){
-				minimo = puntos[i][0];
-			}
-			if(puntos[i][1] < minimo){
-				minimo = puntos[i][1];
+			if(puntos[i][j] < minimo){
+				minimo = puntos[i][j];
 			}
 		}
 		//Para que el punto sea visible se añade un valor al resultado.
-		return minimo - 2;
+		return minimo - 1;
 	}
 	
-	function posicion_maxima(){
+	function posicion_maxima(j){
 		var maximo = 0;
 		for (var i = 0; i < puntos.length; i++) {
-			if(puntos[i][0] > maximo){
-				maximo = puntos[i][0];
-			}
-			if(puntos[i][1] > maximo){
-				maximo = puntos[i][1];
+			if(puntos[i][j] > maximo){
+				maximo = puntos[i][j];
 			}
 		}
 		//Para que el punto sea visible se añade un valor al resultado.
-		return maximo + 2;
+		return maximo + 1;
 	}
 	
-	function puntos_mostrados(){
-		return posicion_maxima() + Math.abs(posicion_minima());
+	function puntos_mostrados(i){
+		return posicion_maxima(i) + Math.abs(posicion_minima(i));
 	}
 	/**
 	 * Indicará el ancho de una unidad de medida en pixeles
 	 * @returns
 	 */
 	function set_escala(){
-		if(MAX_x > MAX_y){
-			escala = MAX_y / puntos_mostrados();
-		}else{
-			escala = MAX_x / puntos_mostrados();
-		}
-		//Limitamos los decimales a 3 decimales.
-		escala = escala.toFixed(3);
+		// valor 0 para X y valor Y para 1
+		escalaY = MAX_y / puntos_mostrados(1);
+		escalaX = MAX_x / puntos_mostrados(0);
+		escalaX = escalaX.toFixed(3);
+		escalaY = escalaY.toFixed(3);
 	}
 	
 	/**
@@ -583,9 +592,9 @@ $(document).ready(function(){
 	 */
 	function posicion_ejeY(){
 		/*Se calculan los puntos negativos con:  número de puntos - el punto de mayor valor*/
-		var aux = puntos_mostrados() - posicion_maxima();
+		var aux = puntos_mostrados(1) - posicion_maxima(1);
 		/*posicion = MAX_y - (aux * escala)*/
-		var posicion = MAX_y - (aux * escala);
+		var posicion = MAX_y - (aux * escalaY);
 		if(posicion < 20){
 			return 20;
 		}else{
@@ -598,8 +607,8 @@ $(document).ready(function(){
 	 */
 	function posicion_ejeX(){
 		/*Se calcula el número de puntos - el punto de mayor valor*/
-		var aux = puntos_mostrados() - posicion_maxima();
-		var posicion = aux * escala;
+		var aux = puntos_mostrados(0) - posicion_maxima(0);
+		var posicion = aux * escalaX;
 		if(posicion > (MAX_x - 20)){
 			return MAX_x -20;
 		}else{
@@ -629,7 +638,9 @@ $(document).ready(function(){
 	var puntos= new Array();
 	var MAX_x = c.width;
 	var MAX_y = c.height;
-	var escala = 50;
+	var escalaX = 50;
+	var escalaY = 50;
+	
 	
 	/**
 	 *	LECTURA DE FICHERO
