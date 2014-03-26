@@ -46,7 +46,7 @@ $(document).ready(function(){
 		ctx.fill();
 		ctx.closePath();
 		
-		alert(escalaX + "-escala-" + escalaY);
+//		alert(escalaX + "-escala-" + escalaY);
 	}
 
 	/**
@@ -79,6 +79,31 @@ $(document).ready(function(){
 //		}
 	}
 
+	function calcula_producto(i){
+		var escala;
+		if(i == "x"){
+			escala = escalaX / 2;
+		}else{
+			escala = escalaY;
+		}
+		var productoX = 1;
+		if(escala < 15 && escala >= 7.5 ){
+			productoX = 2;
+		}else if(escala < 7.5 && escala >= 5){
+			productoX = 5;
+		}else if(escala < 5 && escala >= 2.5){
+			productoX = 10;
+		}else if(escala < 2.5 && escala >= 1){
+			productoX = 20;
+		}else if(escala < 1){
+			productoX = 50;
+		}else if (escala < 0.5){
+			productoX = 100;
+		}else if(escala < 0.25){
+			productoX = 500;
+		}
+		return productoX;
+	}
 
 	/**
 	 * Se generan los ejes de las X y de las Y para nuestra gráfica
@@ -101,34 +126,9 @@ $(document).ready(function(){
 		ctx.fill(); 
 		ctx.closePath();
 		//marcadores 
-		var productoX = 1;
-		if(escalaX < 15 && escalaX >= 7.5 ){
-			productoX = 2;
-		}else if(escalaX < 7.5 && escalaX >= 5){
-			productoX = 5;
-		}else if(escalaX < 5 && escalaX >= 2.5){
-			productoX = 10;
-		}else if(escalaX < 2.5 && escalaX >= 1){
-			productoX = 20;
-		}else if(escalaX < 1){
-			productoX = 50;
-		}else if (escalaX < 0.5){
-			productoX = 100;
-		}
-		var productoY = 1;
-		if(escalaY < 15 && escalaY >= 7.5 ){
-			productoY = 2;
-		}else if(escalaY < 7.5 && escalaY >= 5){
-			productoY = 5;
-		}else if(escalaY < 5 && escalaY >= 2.5){
-			productoY = 10;
-		}else if(escalaY < 2.5 && escalaY >= 1){
-			productoY = 20;
-		}else if(escalaY < 1){
-			productoY = 50;
-		}else if (escalaY < 0.5){
-			productoY = 100;
-		}
+		var productoX = calcula_producto("x");
+		var productoY = calcula_producto("y");
+
 		for(var i=0;i<=MAX_x; i= parseFloat(i) + parseFloat(escalaX * productoX)){
 			//Parte derecha de las X.
 			ctx.beginPath();
@@ -172,11 +172,11 @@ $(document).ready(function(){
 			ctx.fill();
 			//Texto:
 			if(i/escalaY != 0){
-				ctx.textAlign = "left";
+				ctx.textAlign = "rigth";
 				ctx.textBaseline = "top";
 				ctx.font = "8pt Arial";
 				ctx.fillStyle = "black";
-				ctx.fillText(Math.round(i/escalaY), posicion_ejeX() - 10, posicion_ejeY() -i -3);
+				ctx.fillText(Math.round(i/escalaY), posicion_ejeX() - 15, posicion_ejeY() -i -3);
 			}
 			ctx.closePath();
 			//Parte inferior de las Y.
@@ -189,11 +189,11 @@ $(document).ready(function(){
 			ctx.fill();
 			//Texto:
 			if(i/escalaY != 0){
-				ctx.textAlign = "left";
+				ctx.textAlign = "rigth";
 				ctx.textBaseline = "top";
-				ctx.font = "6pt Arial";
+				ctx.font = "8pt Arial";
 				ctx.fillStyle = "black";
-				ctx.fillText(-Math.round(i/escalaY), posicion_ejeX() - 10, posicion_ejeY() +i -3);
+				ctx.fillText(-Math.round(i/escalaY), posicion_ejeX() -15, posicion_ejeY() +i -3);
 			}
 			ctx.closePath();
 		}
@@ -555,7 +555,7 @@ $(document).ready(function(){
 			}
 		}
 		//Para que el punto sea visible se añade un valor al resultado.
-		return minimo - 1;
+		return minimo - calcula_producto(j);
 	}
 	
 	function posicion_maxima(j){
@@ -566,7 +566,7 @@ $(document).ready(function(){
 			}
 		}
 		//Para que el punto sea visible se añade un valor al resultado.
-		return maximo + 1;
+		return maximo + calcula_producto(j);
 	}
 	
 	function puntos_mostrados(i){
