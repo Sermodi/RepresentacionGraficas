@@ -4,6 +4,25 @@ canvas#myCanvas {
 	border:1px solid #3f7f00;
 }
 
+#help{
+	width:37px;
+	height: 32px;
+	background:url(../images/Info.png) 0 0;
+	float:right;
+}
+#help:hover{
+	background: url(../images/Info.png) 0 -32px;
+}
+
+#help-info{
+	border: #0C5C00 solid 1px;
+	background: #81F505;
+	width: 200px;
+	float:right;
+	position: absolute;
+	z-index: 50px;
+}
+
 th{
 	min-width: 2em;
 }

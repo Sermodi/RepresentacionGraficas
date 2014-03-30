@@ -615,11 +615,61 @@ $(document).ready(function(){
 			return posicion;
 		}
 	}
+	
+	/**
+	 * Determina el cuadrante por el que hay más puntos en la recta de error.
+	 * 
+	 * 			|
+	 * 		4º	|	1º
+	 * 	----------------
+	 * 			|
+	 * 		3º	|	2º
+	 * 
+	 * @returns Un valor de 1 a 4 con 
+	 */
+	function cuadrante_principal(){
+		var funcion = a* 500 + b;
+		if(funcion >= 0){
+			cuadrante = 1;
+		}else{
+			cuadrante = 2;
+		}
+		return cuadrante;
+	}
+	
+	/**
+	 * Situa los datos de ajuste sobre el canvas
+	 */
+	function datos_ajuste(){
+		var cuadrante = cuadrante_principal();
+		var x = 0;
+		var y = 0;
+		if(cuadrante == 1){
+			x = c.width - 100;
+			y = 20;
+		}else if(cuadrante == 2){
+			x = c.width - 100;
+			y = c.height -10;
+		}else if(cuadrante == 3){
+			x = 100;
+			y = c.height -10;
+		}else if(cuadrante == 4){
+			x = 100;
+			y = 20;
+		}
+		ctx.textAlign = "right";
+		ctx.textBaseline = "bottom";
+		ctx.font = "15pt Verdana";
+		ctx.fillStyle = "red";
+		ctx.fillText("y="+ Math.round(a*1000)/1000 +" + "+Math.round(b*1000)/1000+"x", x, y);
+		
+	}
+	
 	/**
 	 * Declaración de variables.
 	 */
 	var c=document.getElementById("myCanvas");
-	c.width = $(window).width() / 2;
+	c.width = $(window).width() * 0.5;
 	c.height = $(window).height() * 0.75;
 	var ctx=c.getContext("2d");
 	//Tamaño de la tabla de inserccion de puntos.
@@ -744,6 +794,26 @@ $(document).ready(function(){
 					}
 				}
 			};
+			
+	/**
+	 *  
+	 */		
+	
+	var info = $("#help-info");
+	info.hide();
+	var help = $( "#help" );
+	var offset = help.position();
+		info.css("left", offset.left - 50);
+		info.css("top", offset.top + 31);
+	
+	help.hover(function(){
+		info.show();
+	}
+	,
+	function(){
+		info.hide();
+	});
+	
 	/**
 	 * Script principal
 	 */
@@ -775,6 +845,7 @@ $(document).ready(function(){
 			regresionLineal();
 //			dibujar_lineas();
 			draw_points();
+			datos_ajuste();
 			mostrar(reset_grafica);
 			mostrar(to_image);
 		}
@@ -793,11 +864,7 @@ $(document).ready(function(){
 	};
 	
 	to_image.onclick = function(){
-		ctx.textAlign = "right";
-		ctx.textBaseline = "bottom";
-		ctx.font = "30 pt Verdana";
-		ctx.fillStyle = "red";
-		ctx.fillText("y="+a+" + "+b+"x", MAX_x - 50, MAX_y -50);
+		datos_ajuste();
 		img.src = c ? c.toDataURL() : "could not find a <canvas> element";
 		ocultar(c);
 		ocultar(add_punto);
